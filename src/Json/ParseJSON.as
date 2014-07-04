@@ -11,6 +11,7 @@ package Json
 	import models.HomeMD;
 	import models.LineMd;
 	import models.PointMd;
+	import models.RouteItemMd;
 	import models.RouteMd;
 	import models.WldMd;
 
@@ -51,6 +52,7 @@ package Json
 		private var homeDataArr:Vector.<HomeMD> = new Vector.<HomeMD>;
 		private var lineMd:LineMd;
 		private var wldMd:WldMd;
+		private var allSpotsArr:Vector.<PointMd> = new Vector.<PointMd>;
 		private function parseSource(data):void
 		{
 			//首页
@@ -63,6 +65,25 @@ package Json
 				homeMd.picArr = hObj.pictures;
 				homeDataArr.push(homeMd);
 			}
+			//all spots
+			var aPointMd:PointMd;
+			for each(var amd:Object in data.ALLSPOTS)
+			{
+				aPointMd = new PointMd();
+				aPointMd.name = amd.name;
+				aPointMd.pointXY = new Point(amd.coordX,amd.coordY);
+				aPointMd.atlasArr = new Array();
+				var atmd:AtlaMd;
+				for each(var aobj:Object in amd.atlas)
+				{
+					atmd = new AtlaMd();
+					atmd.name = aobj.name;
+					atmd.url = aobj.url;
+					aPointMd.atlasArr.push(atmd);
+				}
+				allSpotsArr.push(aPointMd);
+			}
+			
 			
 			//好线路
 			lineMd = new LineMd();
@@ -74,28 +95,19 @@ package Json
 			{
 				routeMd = new RouteMd();
 				routeMd.name = obj.name;
-				routeMd.lineMap = obj.lineMap;
-				routeMd.desc = obj.desc;
-				routeMd.pointsArr = new Array();
-				var pointMd:PointMd;
-				for each(var o:Object in obj.points)
+				routeMd.itemArr = new Array();
+				var routeItemMd:RouteItemMd;
+				for each(var iobj:Object in obj.items)
 				{
-					pointMd = new PointMd();
-					pointMd.name = o.name;
-					pointMd.pointXY = new Point(o.coordX,o.coordY);
-					pointMd.audioUrl = o.audio;
-					pointMd.background = o.background;
-					pointMd.desc = o.desc;
-					pointMd.atlasArr = new Array();
-					var altMd:AtlaMd;
-					for each(var oo:Object in o.atlas)
+					routeItemMd = new RouteItemMd();
+					routeItemMd.name = iobj.name;
+					routeItemMd.lineMap = iobj.lineMap;
+					routeItemMd.pintsArr = new Array();
+					for each(var n:int in iobj.points)
 					{
-						altMd = new AtlaMd();
-						altMd.name = oo.name;
-						altMd.desc = oo.url;
-						pointMd.atlasArr.push(altMd);
+						routeItemMd.pintsArr.push(allSpotsArr[n]);
 					}
-					routeMd.pointsArr.push(pointMd);
+					routeMd.itemArr.push(routeItemMd);
 				}
 				lineMd.routesArr.push(routeMd);
 			}

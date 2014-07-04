@@ -2,11 +2,18 @@ package
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
 	import Json.ParseJSON;
 	
+	import core.baseComponent.CSprite;
+	
 	import models.HomeMD;
+	
+	import pages.HomePage;
 	
 	import views.CMapView;
 	
@@ -34,13 +41,40 @@ package
 		}
 		private function initHomeUI():void
 		{
-			var i:int;
 			var homeArr:Vector.<HomeMD> = json.getHomeData();
-			for each(var hMd:HomeMD in homeArr)
+			var home:HomePage = new HomePage(homeArr);
+			addChild(home);
+			btnContain = new Sprite();
+			addChild(btnContain);
+			initGuideButton();
+		}
+		private var btnContain:Sprite;
+		private var btnNameArr:Array = ["首页","好线路","看美景","地图","贴士"];
+		private function initGuideButton():void
+		{
+			var txt:TextField;
+			var i:int = 0;
+			var tContain:CSprite;
+			var format:TextFormat = new TextFormat(null,20,0xffffff,true);
+			for each(var str:String in btnNameArr)
 			{
-				trace(i);
+				tContain = new CSprite();
+				tContain.data = i;
+				txt = new TextField();
+				txt.mouseEnabled = txt.selectable = false;
+				txt.text = str;
+				txt.setTextFormat(format);
+				tContain.x = i * 80 + 100;
+				tContain.addEventListener(MouseEvent.CLICK,clickHandler);
+				tContain.addChild(txt);
+				btnContain.addChild(tContain);
 				i++;
 			}
+		}
+		private function clickHandler(event:MouseEvent):void
+		{
+			var t:CSprite = event.currentTarget as CSprite;
+			trace(t.data);
 		}
 	}
 }

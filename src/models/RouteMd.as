@@ -8,6 +8,6 @@ package models
 		public var name:String;
 		public var lineMap:String;
 		public var desc:String;
-		public var pointsArr:Array;
+		public var itemArr:Array;
 	}
 }
