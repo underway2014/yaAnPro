@@ -14,6 +14,7 @@ package
 	import models.HomeMD;
 	
 	import pages.HomePage;
+	import pages.LinePage;
 	
 	import views.CMapView;
 	
@@ -71,10 +72,20 @@ package
 				i++;
 			}
 		}
+		private var linePage:LinePage;
 		private function clickHandler(event:MouseEvent):void
 		{
 			var t:CSprite = event.currentTarget as CSprite;
 			trace(t.data);
+			switch(t.data)
+			{
+				case 0:
+					linePage = new LinePage(json.getLineData());
+					addChild(linePage);
+					break;
+				case 1:
+					break;
+			}
 		}
 	}
 }
