@@ -83,12 +83,14 @@ package pages
 		private function changeStateNum(_arr:Array):void
 		{
 			var nbtn:CButton;
+			var i:int =1;
 			for each(var pmd:PointMd in _arr)
 			{
-				nbtn = new CButton([],false);
+				nbtn = new CButton(["source/stateNum/" + i + ".png","source/stateNum/" + i + ".png"],false);
 				nbtn.x = pmd.pointXY.x;
 				nbtn.y = pmd.pointXY.y;
 				nbtn.data = pmd;
+				i++;
 				nbtn.addEventListener(MouseEvent.CLICK,clicNumHandler);
 				numContain.addChild(nbtn);
 			}
@@ -109,7 +111,7 @@ package pages
 			var i:int = 0;
 			for each(var roteMd:RouteMd in lineData.routesArr)
 			{
-				btn = new CTextButton([],false);
+				btn = new CTextButton(["source/line/lineButton/1.png","source/line/lineButton/2.png"],false);
 				btn.text = roteMd.name;
 				btn.data = roteMd.itemArr;
 				btn.addEventListener(MouseEvent.CLICK,typeClickHandler);

@@ -30,11 +30,15 @@ package views
 		private function initList():void
 		{
 			var btn:CTextButton;
+			var i:int;
 			for each(var md:RouteItemMd in dataArr)
 			{
-				btn = new CTextButton([],false);
+				btn = new CTextButton(["source/line/lineButton/3.png","source/line/lineButton/4.png"],false);
 				btn.text = md.name;
 				btn.data = md;
+				btn.y = 50 * i;
+				addChild(btn);
+				i++;
 				btn.addEventListener(MouseEvent.CLICK,clickHandler);
 				group.add(btn);
 			}
