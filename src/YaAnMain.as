@@ -1,5 +1,6 @@
 package
 {
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -9,16 +10,20 @@ package
 	
 	import Json.ParseJSON;
 	
+	import core.baseComponent.CButton;
+	import core.baseComponent.CImage;
 	import core.baseComponent.CSprite;
 	
 	import models.HomeMD;
+	import models.YAConst;
 	
 	import pages.HomePage;
+	import pages.KmjPage;
 	import pages.LinePage;
 	
 	import views.CMapView;
 	
-	[SWF(width="1080",height="608",frameRate="30")]
+	[SWF(width="1494",height="700",frameRate="30")]
 	public class YaAnMain extends Sprite
 	{
 		public function YaAnMain()
@@ -46,11 +51,46 @@ package
 			var home:HomePage = new HomePage(homeArr);
 			addChild(home);
 			btnContain = new Sprite();
+//			btnContain.y = 15;
+			btnContain.graphics.beginFill(0x0,.2);
+			btnContain.graphics.drawRect(0,0,YAConst.SCREEN_WIDTH,60);
+			btnContain.graphics.endFill();
+			 var hline:Shape = new Shape();
+			 hline.graphics.beginFill(0xffc125,.8);
+			 hline.graphics.drawRect(0,56,YAConst.SCREEN_WIDTH,4);
+			 hline.graphics.endFill();
+			 btnContain.addChild(hline);
+			
 			addChild(btnContain);
-			initGuideButton();
+//			initGuideButton();
+			initNavigation();
 		}
 		private var btnContain:Sprite;
 		private var btnNameArr:Array = ["首页","好线路","看美景","地图","贴士"];
+		private var homeBtnArr:Array = ["1.png","2.png","3.png","4.png","5.png"];
+		private function initNavigation():void
+		{
+			var btn:CButton;
+			var mainPath:String = "source/home/btn/";
+			var benginX:int = 100;
+			var i:int = 0;
+			var lineImg:CImage;
+			for each(var str:String in homeBtnArr)
+			{
+				btn = new CButton([mainPath + str,mainPath + str],false);
+				btnContain.addChild(btn);
+				btn.x = benginX + i * 175;
+				btn.y = 15;
+				btn.data = i;
+				btn.addEventListener(MouseEvent.CLICK,clickHandler);
+				lineImg = new CImage(1,40,false,false);
+				lineImg.url = mainPath + "line.png";
+				btnContain.addChild(lineImg);
+				i++;
+				lineImg.x = benginX + i * 175 - 10;
+				lineImg.y = 12;
+			}
+		}
 		private function initGuideButton():void
 		{
 			var txt:TextField;
@@ -73,9 +113,11 @@ package
 			}
 		}
 		private var linePage:LinePage;
+		private var kmjPage:KmjPage;
+//		private var
 		private function clickHandler(event:MouseEvent):void
 		{
-			var t:CSprite = event.currentTarget as CSprite;
+			var t:CButton = event.currentTarget as CButton;
 			trace(t.data);
 			switch(t.data)
 			{
@@ -84,6 +126,8 @@ package
 					addChild(linePage);
 					break;
 				case 1:
+					kmjPage = new KmjPage(json.getKmjData());
+					addChild(kmjPage);
 					break;
 			}
 		}

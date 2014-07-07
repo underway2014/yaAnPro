@@ -26,12 +26,15 @@ package pages
 			imgArr = new Array();
 			for each(var md:HomeMD in dataArr)
 			{
-				img = new CImage(YAConst.SCREEN_WIDTH,YAConst.SCREEN_HEIGHT,false,false);
-				img.url = md.picArr[0];
-				img.data = md.type;
+				for each(var str:String in md.picArr)
+				{
+					img = new CImage(YAConst.SCREEN_WIDTH,YAConst.SCREEN_HEIGHT,false,false);
+					img.url = str;
+					img.data = md.type;
+					imgArr.push(img);
+				}
 //				img.x = i * YAConst.SCREEN_WIDTH;
 //				contentSprite.addChild(img);
-				imgArr.push(img);
 				i++;
 			}
 			var loopAtlas:LoopAtlas = new LoopAtlas(imgArr);

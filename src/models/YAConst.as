@@ -5,7 +5,7 @@ package models
 		public function YAConst()
 		{
 		}
-		public static const SCREEN_WIDTH:int = 1080;
-		public static const SCREEN_HEIGHT:int = 608;
+		public static const SCREEN_WIDTH:int = 1494;
+		public static const SCREEN_HEIGHT:int = 700;
 	}
 }

@@ -9,6 +9,8 @@ package Json
 	
 	import models.AtlaMd;
 	import models.HomeMD;
+	import models.KmjMd;
+	import models.KmjPointMd;
 	import models.LineMd;
 	import models.PointMd;
 	import models.RouteItemMd;
@@ -52,6 +54,7 @@ package Json
 		private var homeDataArr:Vector.<HomeMD> = new Vector.<HomeMD>;
 		private var lineMd:LineMd;
 		private var wldMd:WldMd;
+		private var kmjMd:KmjMd;
 		private var allSpotsArr:Vector.<PointMd> = new Vector.<PointMd>;
 		private function parseSource(data):void
 		{
@@ -72,6 +75,8 @@ package Json
 				aPointMd = new PointMd();
 				aPointMd.name = amd.name;
 				aPointMd.pointXY = new Point(amd.coordX,amd.coordY);
+				aPointMd.audioUrl = amd.audio;
+				aPointMd.background = amd.background;
 				aPointMd.atlasArr = new Array();
 				var atmd:AtlaMd;
 				for each(var aobj:Object in amd.atlas)
@@ -138,6 +143,22 @@ package Json
 				wldMd.pointsArr.push(pointMD);
 			}
 			
+			//看美景
+			kmjMd = new KmjMd();
+			var kmjData:Object = data.KMJ;
+			kmjMd.name = kmjData.name;
+			kmjMd.background = kmjData.background;
+			kmjMd.pointArr = new Array();
+			var kmjSpotMd:KmjPointMd;
+			for each(var ko:Object in kmjData.points)
+			{
+				kmjSpotMd = new KmjPointMd();
+				kmjSpotMd.name = ko.name;
+				kmjSpotMd.pointXY = new Point(ko.coordX,ko.coordY);
+				kmjSpotMd.skinArr = new Array(ko.btnNormal,ko.btnDown);
+				kmjSpotMd.spotMd = allSpotsArr[ko.spotId];
+				kmjMd.pointArr.push(kmjSpotMd);
+			}
 			
 			dispatchEvent(new Event(LOAD_COMPLETE));
 		}
@@ -156,6 +177,10 @@ package Json
 		public function getWldData():WldMd
 		{
 			return wldMd;
+		}
+		public function getKmjData():KmjMd
+		{
+			return kmjMd;
 		}
 	}
 }

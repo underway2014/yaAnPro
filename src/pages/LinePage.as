@@ -57,6 +57,19 @@ package pages
 			
 			initColorMap();
 			initControl();
+			initBackButton();
+		}
+		private function initBackButton():void
+		{
+			var arr:Array = ["source/back_up.png","source/back_up.png"];
+			var backBtn:CButton = new CButton(arr,false);
+			backBtn.addEventListener(MouseEvent.CLICK,backHandler);
+			addChild(backBtn);
+			backBtn.x = 700;
+		}
+		private function backHandler(event:MouseEvent):void
+		{
+			this.visible = false;
 		}
 		private var mapContain:Sprite;
 		private var bgContain:Sprite;
@@ -82,6 +95,10 @@ package pages
 		}
 		private function changeStateNum(_arr:Array):void
 		{
+			while(numContain.numChildren)
+			{
+				numContain.removeChildAt(0);
+			}
 			var nbtn:CButton;
 			var i:int =1;
 			for each(var pmd:PointMd in _arr)
@@ -98,6 +115,8 @@ package pages
 		private function clicNumHandler(event:MouseEvent):void
 		{
 			var cnbtn:CButton = event.currentTarget as CButton;
+			var atlasPage:AtlasPage = new AtlasPage(cnbtn.data);
+			addChild(atlasPage);
 			
 		}
 		private function changeLine(lineMap:String):void//添加纯线 路
@@ -136,6 +155,7 @@ package pages
 			routeListView.addEventListener(DataEvent.CLICK,listChangeHandler);
 			routeListView.y = 80;
 			controlContain.addChild(routeListView);
+			routeListView.reset();
 		}
 		private function listChangeHandler(event:DataEvent):void
 		{

@@ -43,7 +43,7 @@ package views
 				group.add(btn);
 			}
 			group.addEventListener(Cevent.SELECT_CHANGE,slectHandler);
-			group.selectById(0);
+//			group.selectById(0);
 		}
 		private function clickHandler(event:MouseEvent):void
 		{
@@ -56,6 +56,10 @@ package views
 			var dataEvent:DataEvent = new DataEvent(DataEvent.CLICK);
 			dataEvent.data = cb.data;
 			this.dispatchEvent(dataEvent);
+		}
+		public function reset():void
+		{
+			group.selectById(0);
 		}
 	}
 }
