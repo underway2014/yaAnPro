@@ -1,6 +1,7 @@
 package views
 {
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
 	import baidu.map.basetype.LngLat;
@@ -12,6 +13,8 @@ package views
 	import baidu.map.core.Map;
 	import baidu.map.layer.Layer;
 	import baidu.map.layer.RasterLayer;
+	
+	import core.baseComponent.CButton;
 	
 	public class CMapView extends Sprite
 	{
@@ -28,7 +31,7 @@ package views
 			
 //			 添加Navigator
 			var nav:Navigator = new Navigator(map);
-			map.addControl(nav);
+//			map.addControl(nav);
 //			nav.anchor = Anchor.BC;
 			nav.offset = new Size(200,100);
 			trace(nav.offset.width,nav.offset.height);
@@ -41,6 +44,17 @@ package views
 			// 添加Ruler			
 			var ruler:Ruler = new Ruler(map);
 //			map.addControl(ruler);
+			
+			var arr:Array = ["source/back_up.png","source/back_up.png"];
+			var backBtn:CButton = new CButton(arr,false);
+			backBtn.addEventListener(MouseEvent.CLICK,backHandler);
+			addChild(backBtn);
+			backBtn.x = 30;
+			backBtn.y = 30;
+		}
+		private function backHandler(event:MouseEvent):void
+		{
+			this.visible = false;
 		}
 	}
 }

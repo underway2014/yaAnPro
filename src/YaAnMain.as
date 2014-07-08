@@ -29,10 +29,13 @@ package
 		public function YaAnMain()
 		{
 			
-			var mapView:CMapView = new CMapView(new Point(101.2,38.4),new Point(600,400),10);
-			addChild(mapView);
 			
+//			
 			initData();
+//			var str:String = "天下第一关解说打开";
+//			var sptName:SpotNameView = new SpotNameView(str);
+//			addChild(sptName);
+//			sptName.y = 20;
 		}
 		private var json:ParseJSON;
 		private function initData():void
@@ -66,8 +69,8 @@ package
 			initNavigation();
 		}
 		private var btnContain:Sprite;
-		private var btnNameArr:Array = ["首页","好线路","看美景","地图","贴士"];
-		private var homeBtnArr:Array = ["1.png","2.png","3.png","4.png","5.png"];
+		private var btnNameArr:Array = ["看美景","好吃客","玩乐地","好线路","查地图","贴士"];
+		private var homeBtnArr:Array = ["1.png","2.png","3.png","4.png","5.png","6.png"];
 		private function initNavigation():void
 		{
 			var btn:CButton;
@@ -114,6 +117,7 @@ package
 		}
 		private var linePage:LinePage;
 		private var kmjPage:KmjPage;
+		private var mapView:CMapView;
 //		private var
 		private function clickHandler(event:MouseEvent):void
 		{
@@ -122,12 +126,32 @@ package
 			switch(t.data)
 			{
 				case 0:
-					linePage = new LinePage(json.getLineData());
-					addChild(linePage);
+					if(!kmjPage)
+					{
+						kmjPage = new KmjPage(json.getKmjData());
+						addChild(kmjPage);
+					}
+					kmjPage.visible = true;
 					break;
 				case 1:
-					kmjPage = new KmjPage(json.getKmjData());
-					addChild(kmjPage);
+					break;
+				case 2:
+					break;
+				case 3:
+					if(!linePage)
+					{
+						linePage = new LinePage(json.getLineData());
+						addChild(linePage);
+					}
+					linePage.visible = true;
+					break;
+				case 4:
+					if(!mapView)
+					{
+						mapView = new CMapView(new Point(103.0119,29.9848),new Point(YAConst.SCREEN_WIDTH,YAConst.SCREEN_HEIGHT),14);
+						addChild(mapView);
+					}
+					mapView.visible = true;
 					break;
 			}
 		}

@@ -1,13 +1,15 @@
 package pages
 {
+	import flash.display.Shader;
+	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.display3D.IndexBuffer3D;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	
 	import core.baseComponent.CButton;
 	import core.baseComponent.CImage;
-	import core.baseComponent.LoopAtlas;
 	import core.baseComponent.MusicPlayer;
 	import core.filter.CFilter;
 	import core.tween.TweenLite;
@@ -15,6 +17,8 @@ package pages
 	import models.AtlaMd;
 	import models.PointMd;
 	import models.YAConst;
+	
+	import views.SpotNameView;
 	
 	public class AtlasPage extends Sprite
 	{
@@ -27,11 +31,9 @@ package pages
 			pointMd = _pointMd;
 			
 			var bgImg:CImage = new CImage(YAConst.SCREEN_WIDTH,YAConst.SCREEN_HEIGHT,false,false);
-			bgImg.url = "source/allSpots/bg/bg1.jpg";
-//			bgImg.url = pointMd.background;
+			bgImg.url = "source/allSpots/bg/bg.jpg";
 			addChild(bgImg);
 			
-//			return;
 			contentContain = new Sprite();
 			contentContain.y = 150;
 			addChild(contentContain);
@@ -39,17 +41,18 @@ package pages
 			music = new MusicPlayer(pointMd.audioUrl,false,false);
 			music.addEventListener(MusicPlayer.PLAY_OVER,musicOverHandler);
 			var sArr:Array = ["source/atlas/play.png","source/atlas/pause.png"];
-			audioButton = new CButton(sArr,false,true,true);
+			audioButton = new CButton(sArr,true,true,true);
 			audioButton.addEventListener(MouseEvent.CLICK,playMusicHandler);
 			this.addChild(audioButton);
-			audioButton.x = 600;
-			audioButton.y = 100;
+			audioButton.x = YAConst.SCREEN_WIDTH - 77;
+			audioButton.y = 94;
 			
 			var arr:Array = ["source/back_up.png","source/back_up.png"];
 			var backBtn:CButton = new CButton(arr,false);
 			backBtn.addEventListener(MouseEvent.CLICK,backHandler);
 			addChild(backBtn);
-			backBtn.x = 700;
+			backBtn.x = 30;
+			backBtn.y = 20;
 			
 			initContent();
 		}
@@ -57,6 +60,13 @@ package pages
 		{
 			if(this.parent)
 			{
+				if(!music.isPause)
+				{
+					music.pause();
+				}
+				audioButton.select(-1);
+				contentContain.x = 0;
+				changeName(0);
 				this.parent.removeChild(this);
 			}
 		}
@@ -66,7 +76,7 @@ package pages
 		{
 			if(music.isPause)
 			{
-				music.play();
+				music.play(0);
 			}else{
 				music.pause();
 			}
@@ -75,20 +85,23 @@ package pages
 		{
 			audioButton.select(false);
 		}
+		private var nameArr:Array;
 		private function initContent():void
 		{
 			var atlasArr:Array = pointMd.atlasArr;
 			
 			var imgArr:Array = [];
+			nameArr = new Array();
 			var img:CImage;
 			var i:int = 0;
 			for each(var md:AtlaMd in atlasArr)
 			{
-				img = new CImage(900,460,false,false);
+				img = new CImage(atoDis,535,false,false);
 				img.url = md.url;
 				imgArr.push(img);
-				img.x = i * (900 + 4);
-				img.filters = CFilter.whiteFilter;
+				nameArr.push(md.name);
+				img.x = i * (atoDis + 4);
+				img.filters = CFilter.photoBorderFilter;
 				contentContain.addChild(img);
 				i++;
 			}
@@ -97,18 +110,51 @@ package pages
 			contentContain.addEventListener(MouseEvent.MOUSE_DOWN,mouseDonwnHandler);
 			contentContain.addEventListener(MouseEvent.MOUSE_UP,stopDrayHandler);
 			contentContain.addEventListener(MouseEvent.MOUSE_OUT,stopDrayHandler);
+			
+			showLine();
 		}
+		private var lineWidth:int;
+		private var currentPage:int = 0;
+		private var segWdth:int;
+		private function showLine():void
+		{
+			lineWidth = YAConst.SCREEN_WIDTH - 200;
+			var hLine:Shape = new Shape();
+			hLine.graphics.beginFill(0xf0f0f0);
+			hLine.graphics.drawRoundRect(0,0,lineWidth,8,4,4);
+			hLine.graphics.endFill();
+			hLine.y = 120;
+			hLine.x = 50;
+			addChild(hLine);
+			
+			segWdth = lineWidth / nameArr.length;
+			changeName(0);
+		}
+		private var nameView:SpotNameView;
+		private function changeName(_index:int):void
+		{
+			if(!nameView)
+			{
+				nameView = new SpotNameView();
+				addChild(nameView);
+				nameView.y = 50;
+			}
+			nameView.text = nameArr[_index];
+			var eX:int = _index *segWdth;
+			TweenLite.to(nameView,.3,{x:eX});
+		}
+		private var atlasY:int = 150;
 		private var beginX:int;
 		private var dis:int = 15;
 		private var disTime:Number = 300;
 		private var beginTime:Number;
-		private var atoDis:int = 900;
+		private var atoDis:int = 800;
 		private function mouseDonwnHandler(event:MouseEvent):void
 		{
 			beginX = this.mouseX;
 			var dData:Date = new Date();
 			beginTime = dData.getTime();
-			contentContain.startDrag(false,new Rectangle(YAConst.SCREEN_WIDTH - contentContain.width,150,contentContain.width - YAConst.SCREEN_WIDTH,0));
+			contentContain.startDrag(false,new Rectangle(YAConst.SCREEN_WIDTH - contentContain.width,atlasY,contentContain.width - YAConst.SCREEN_WIDTH,0));
 //			contentContain.addEventListener(MouseEvent.MOUSE_MOVE,mouseMoveHandler);
 		}
 		private function mouseMoveHandler(event:MouseEvent):void
@@ -134,9 +180,21 @@ package pages
 				{
 					endX = -contentContain.width + YAConst.SCREEN_WIDTH
 				}
-				TweenLite.to(contentContain,.3,{x:endX});
+				TweenLite.to(contentContain,.3,{x:endX,onComplete:tweenOver});
+			}else{
+				tweenOver();
 			}
 			contentContain.stopDrag();
+		}
+		private function tweenOver():void
+		{
+			var cx:Number = contentContain.x;
+			currentPage = Math.round(Math.abs(cx) / (atoDis * 1.0));
+			if(Math.abs(cx) >= contentContain.width - YAConst.SCREEN_WIDTH - 50)
+			{
+				currentPage = nameArr.length - 1;
+			}
+			changeName(currentPage);
 		}
 	}
 }

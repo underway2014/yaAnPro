@@ -5,6 +5,7 @@ package pages
 	
 	import core.baseComponent.CButton;
 	import core.baseComponent.CImage;
+	import core.baseComponent.CSprite;
 	
 	import models.KmjMd;
 	import models.KmjPointMd;
@@ -30,18 +31,35 @@ package pages
 			var backBtn:CButton = new CButton(arr,false);
 			backBtn.addEventListener(MouseEvent.CLICK,backHandler);
 			addChild(backBtn);
-			backBtn.x = 700;
+			backBtn.x = 30;
+			backBtn.y = 30;
 			
-			initSpotButton();
+			initAlphaButton();
 		}
 		private function backHandler(event:MouseEvent):void
 		{
 			if(this.parent)
 			{
-				this.parent.removeChild(this);
+				this.visible = false;
 			}
 		}
 		private var btnContain:Sprite;
+		private function initAlphaButton():void
+		{
+			var btn:CSprite;
+			for each(var kmd:KmjPointMd in kmjMd.pointArr)
+			{
+				btn = new CSprite();
+				btn.graphics.beginFill(0xaa0000,0);
+				btn.graphics.drawRect(0,0,150,65);
+				btn.graphics.endFill();
+				btnContain.addChild(btn);
+				btn.x = kmd.pointXY.x;
+				btn.y = kmd.pointXY.y;
+				btn.data = kmd.spotMd;
+				btn.addEventListener(MouseEvent.CLICK,clickAlphaButton);
+			}
+		}
 		private function initSpotButton():void
 		{
 			var btn:CButton;
@@ -58,6 +76,12 @@ package pages
 		private function clickHandler(event:MouseEvent):void
 		{
 			var cb:CButton = event.currentTarget as CButton;
+			var atlasPage:AtlasPage = new AtlasPage(cb.data);
+			addChild(atlasPage);
+		}
+		private function clickAlphaButton(event:MouseEvent):void
+		{
+			var cb:CSprite = event.currentTarget as CSprite;
 			var atlasPage:AtlasPage = new AtlasPage(cb.data);
 			addChild(atlasPage);
 		}
