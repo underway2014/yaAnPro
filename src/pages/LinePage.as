@@ -7,6 +7,7 @@ package pages
 	import flash.geom.Rectangle;
 	
 	import core.baseComponent.CButton;
+	import core.baseComponent.CDrag;
 	import core.baseComponent.CTextButton;
 	import core.layout.Group;
 	import core.loadEvents.CLoader;
@@ -17,6 +18,7 @@ package pages
 	import models.PointMd;
 	import models.RouteItemMd;
 	import models.RouteMd;
+	import models.YAConst;
 	
 	import views.RouteListView;
 	
@@ -26,6 +28,7 @@ package pages
 		private var map_width:int = 1080;
 		private var map_height:int = 400;
 		private var alphaMask:Sprite;
+		private var drag:CDrag;
 		public function LinePage(_lineData:LineMd)
 		{
 			super();
@@ -33,7 +36,10 @@ package pages
 			lineData = _lineData;
 			
 			mapContain = new Sprite();
-			addChild(mapContain);
+			drag = new CDrag(YAConst.SCREEN_WIDTH,YAConst.SCREEN_HEIGHT);
+			drag.target = mapContain;
+			addChild(drag);
+//			addChild(mapContain);
 			
 			bgContain = new Sprite();
 			mapContain.addChild(bgContain);
@@ -52,8 +58,8 @@ package pages
 			addChild(alphaMask);
 			alphaMask.visible = false;
 			
-			mapContain.addEventListener(MouseEvent.MOUSE_DOWN,startDragHandler);
-			mapContain.addEventListener(MouseEvent.MOUSE_UP,stopDragHandler);
+//			mapContain.addEventListener(MouseEvent.MOUSE_DOWN,startDragHandler);
+//			mapContain.addEventListener(MouseEvent.MOUSE_UP,stopDragHandler);
 			
 			initColorMap();
 			initControl();

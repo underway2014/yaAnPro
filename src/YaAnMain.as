@@ -20,6 +20,7 @@ package
 	import pages.HomePage;
 	import pages.KmjPage;
 	import pages.LinePage;
+	import pages.WldPage;
 	
 	import views.CMapView;
 	
@@ -118,6 +119,7 @@ package
 		private var linePage:LinePage;
 		private var kmjPage:KmjPage;
 		private var mapView:CMapView;
+		private var wldPage:WldPage;
 //		private var
 		private function clickHandler(event:MouseEvent):void
 		{
@@ -134,8 +136,15 @@ package
 					kmjPage.visible = true;
 					break;
 				case 1:
+					
 					break;
 				case 2:
+					if(!wldPage)
+					{
+						wldPage = new WldPage(json.getWldData());
+						addChild(wldPage);
+					}
+					wldPage.visible = true;
 					break;
 				case 3:
 					if(!linePage)
